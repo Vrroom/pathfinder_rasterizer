@@ -2,7 +2,6 @@ use pathfinder_gl::{GLDevice, GLVersion};
 use pathfinder_renderer::{
     concurrent::{
         rayon::RayonExecutor,
-        scene_proxy::SceneProxy
     },
     gpu::{
         options::{DestFramebuffer, RendererOptions, RendererMode, RendererLevel},
@@ -14,17 +13,16 @@ use pathfinder_renderer::{
 use pathfinder_gpu::{Device, TextureData, RenderTarget};
 use pathfinder_geometry::{
     vector::{Vector2F, Vector2I},
-    rect::{RectF, RectI},
+    rect::{RectI},
 };
 use pathfinder_color::ColorF;
 use pathfinder_resources::embedded::EmbeddedResourceLoader;
-
-use glutin::{GlRequest, Api, WindowedContext, PossiblyCurrent};
-use winit::{
+use glutin::{
+    GlRequest, Api,
     event_loop::EventLoop,
-    window::{WindowBuilder, Window},
-    dpi::{PhysicalSize},
+    dpi::PhysicalSize,
 };
+
 use image::RgbaImage;
 
 pub fn rasterize_scene(mut scene: Scene) -> RgbaImage {
