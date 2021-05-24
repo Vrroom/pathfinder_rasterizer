@@ -1,6 +1,6 @@
-use pathfinder_svg::SVGScene;
-use usvg;
-use pathfinder_rasterize::rasterize_scene;
+mod rasterizer;
+use rasterizer::*;
+use image::RgbaImage;
 
 fn main() {
     let mut args = std::env::args();
@@ -10,9 +10,7 @@ fn main() {
     let output = args.next().expect("output");
 
     let input_data = std::fs::read(&input).expect("read input");
-    let tree = usvg::Tree::from_data(&input_data, &usvg::Options::default()).unwrap();
-    let scene = SVGScene::from_tree(&tree).scene;
-
-    let image = rasterize_scene(scene);
+    let mut rasterizer = Rasterizer::new();
+    let image = RgbaImage::from_raw(72 as u32, 72 as u32, rasterizer.rasterize(input_data)).unwrap();
     image.save(&output).unwrap();
 }
