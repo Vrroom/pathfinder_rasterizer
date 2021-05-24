@@ -7,9 +7,10 @@ use pathfinder_renderer::{
         options::{DestFramebuffer, RendererOptions, RendererMode, RendererLevel},
         renderer::{Renderer},
     },
-    scene::Scene,
     options::{BuildOptions, RenderTransform}
 };
+use pathfinder_svg::SVGScene;
+use usvg::{Tree, Options};
 use pathfinder_gpu::{Device, TextureData, RenderTarget, TextureFormat};
 use pathfinder_geometry::{
     vector::{Vector2F, Vector2I},
@@ -19,7 +20,6 @@ use pathfinder_color::ColorF;
 use pathfinder_resources::embedded::EmbeddedResourceLoader;
 
 use khronos_egl as egl;
-use image::RgbaImage;
 use egl::{DynamicInstance};
 
 pub struct Rasterizer {
@@ -36,7 +36,7 @@ impl Rasterizer {
         };
 
         let display = egl.get_display(egl::DEFAULT_DISPLAY).expect("display");
-        let (major, minor) = egl.initialize(display).expect("init");
+        let (_major, _minor) = egl.initialize(display).expect("init");
     
         let attrib_list = [
             egl::SURFACE_TYPE, egl::PBUFFER_BIT,
@@ -120,9 +120,9 @@ impl Rasterizer {
         renderer
     }
 
-    pub fn rasterize(&mut self, mut input_data: Vec<u8>) -> (Vec<u8>, u32, u32) {
+    pub fn rasterize(&mut self, input_data: Vec<u8>) -> (Vec<u8>, u32, u32) {
         let tree = Tree::from_data(&input_data, &Options::default()).unwrap();
-        let scene = SVGScene::from_tree(&tree).scene;
+        let mut scene = SVGScene::from_tree(&tree).scene;
         self.make_current();
         
         let size = scene.view_box().size().ceil().to_i32();

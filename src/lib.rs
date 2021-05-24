@@ -1,4 +1,5 @@
 use pyo3::prelude::*;
+use pyo3::types::PyByteArray;
 use pyo3::{
     class::PyObjectProtocol,
 };
@@ -38,6 +39,13 @@ use rasterizer::*;
 
 wrap!(PyRasterizer, Rasterizer);
 
+pub struct Data(Vec<u8>);
+impl IntoPy<PyObject> for Data {
+    fn into_py(self, py: Python<'_>) -> PyObject {
+        PyByteArray::new(py, &self.0).into()
+    }
+}
+
 #[pymethods]
 impl PyRasterizer {
     #[new]
@@ -46,8 +54,9 @@ impl PyRasterizer {
     }
 
     #[text_signature = "($self, data: Vector)"]
-    pub fn rasterize(&mut self, data: Vec<u8>) -> PyResult<(Vec<u8>, u32, u32)>{
-        Ok(self.inner.rasterize(data))
+    pub fn rasterize(&mut self, data: Vec<u8>) -> PyResult<(Data, u32, u32)>{
+        let (data, width, height) = self.inner.rasterize(data);
+        Ok((Data(data), width, height))
     }
 }
 
