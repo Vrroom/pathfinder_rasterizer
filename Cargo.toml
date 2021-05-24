@@ -5,7 +5,6 @@ authors = ["Sebastian K <s3bk@protonmail.com>"]
 edition = "2018"
 
 [lib]
-name = "rasterize"
 crate-type = ["cdylib"]
 
 [dependencies.pyo3]
@@ -24,6 +23,6 @@ pathfinder_resources = { git = "https://github.com/servo/pathfinder" }
 pathfinder_svg       = { git = "https://github.com/servo/pathfinder" }
 pdf_font = { git = "https://github.com/pdf-rs/font", package="font" }
 gl = "*"
-khronos-egl = { version = "*", features = ["dynamic"] }
+khronos-egl = { version = "*", features = ["static"] }
 usvg = "0.9.1"
 image = "*"

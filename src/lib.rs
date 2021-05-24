@@ -68,7 +68,7 @@ impl PyObjectProtocol for PyRasterizer {
 }
 
 #[pymodule]
-fn rasterize(_py: Python, m: &PyModule) -> PyResult<()> {
+fn pathfinder_rasterizer(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyRasterizer>()?;
     Ok(())    
 }
