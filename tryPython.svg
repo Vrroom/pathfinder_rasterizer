@@ -1,3 +1,0 @@
-import rasterize 
-
-rasterize.PyRasterizer()

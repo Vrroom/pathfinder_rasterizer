@@ -1,6 +1,4 @@
 use pathfinder_gl::{GLDevice, GLVersion};
-use pathfinder_svg::SVGScene;
-use usvg::{Tree, Options};
 use pathfinder_renderer::{
     concurrent::{
         rayon::RayonExecutor,
@@ -9,6 +7,7 @@ use pathfinder_renderer::{
         options::{DestFramebuffer, RendererOptions, RendererMode, RendererLevel},
         renderer::{Renderer},
     },
+    scene::Scene,
     options::{BuildOptions, RenderTransform}
 };
 use pathfinder_gpu::{Device, TextureData, RenderTarget, TextureFormat};
@@ -18,26 +17,26 @@ use pathfinder_geometry::{
 };
 use pathfinder_color::ColorF;
 use pathfinder_resources::embedded::EmbeddedResourceLoader;
+
 use khronos_egl as egl;
+use image::RgbaImage;
 use egl::{DynamicInstance};
 
 pub struct Rasterizer {
     egl: DynamicInstance::<egl::EGL1_4>,
     display: egl::Display,
+    surface: egl::Surface,
+    context: egl::Context,
     renderer: Option<(Renderer<GLDevice>, Vector2I)>,
 }
-
-// unsafe impl Send for Rasterizer {}
-
 impl Rasterizer {
-
     pub fn new() -> Self {
         let egl = unsafe {
             egl::DynamicInstance::<egl::EGL1_4>::load_required().expect("unable to load libEGL.so.1")
         };
 
         let display = egl.get_display(egl::DEFAULT_DISPLAY).expect("display");
-        let (_major, _minor) = egl.initialize(display).expect("init");
+        let (major, minor) = egl.initialize(display).expect("init");
     
         let attrib_list = [
             egl::SURFACE_TYPE, egl::PBUFFER_BIT,
@@ -66,9 +65,18 @@ impl Rasterizer {
     
 
         Rasterizer {
-            egl, display,
+            egl, display, surface, context,
             renderer: None,
         }
+    }
+
+    fn make_current(&self) {
+        self.egl.make_current(
+            self.display,
+            Some(self.surface),
+            Some(self.surface),
+            Some(self.context)
+        ).unwrap();
     }
 
     fn renderer_for_size(&mut self, size: Vector2I) -> &mut Renderer<GLDevice> {
@@ -112,9 +120,11 @@ impl Rasterizer {
         renderer
     }
 
-    pub fn rasterize(&mut self, data: Vec<u8>) -> Vec<u8> {
-        let tree = Tree::from_data(&data, &Options::default()).unwrap();
-        let mut scene = SVGScene::from_tree(&tree).scene;
+    pub fn rasterize(&mut self, mut input_data: Vec<u8>) -> (Vec<u8>, u32, u32) {
+        let tree = Tree::from_data(&input_data, &Options::default()).unwrap();
+        let scene = SVGScene::from_tree(&tree).scene;
+        self.make_current();
+        
         let size = scene.view_box().size().ceil().to_i32();
 
         let renderer = self.renderer_for_size(size);
@@ -136,7 +146,8 @@ impl Rasterizer {
             TextureData::U8(pixels) => pixels,
             _ => panic!("Unexpected pixel format for default framebuffer!"),
         };
-        return pixels;
+
+        (pixels, size.x() as u32, size.y() as u32)
     }
 }
 
@@ -146,3 +157,11 @@ impl Drop for Rasterizer {
     }
 }
 
+#[test]
+fn test_render() {
+    use pathfinder_geometry::rect::RectF;
+
+    let mut scene = Scene::new();
+    scene.set_view_box(RectF::new(Vector2F::zero(), Vector2F::new(100., 100.)));
+    Rasterizer::new().rasterize(scene);
+}

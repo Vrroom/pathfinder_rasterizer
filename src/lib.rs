@@ -45,18 +45,12 @@ impl PyRasterizer {
         PyRasterizer::from(Rasterizer::new())
     }
 
-    // #[text_signature = "($self)"]
-    // pub fn close(&mut self) {
-    //     drop(self.inner);
-    // }
-
     #[text_signature = "($self, data: Vector)"]
-    pub fn rasterize(&mut self, data: Vec<u8>) -> PyResult<Vec<u8>>{
+    pub fn rasterize(&mut self, data: Vec<u8>) -> PyResult<(Vec<u8>, u32, u32)>{
         Ok(self.inner.rasterize(data))
     }
-
-
 }
+
 #[pyproto]
 impl PyObjectProtocol for PyRasterizer {
     fn __str__(&self) -> PyResult<String> {
