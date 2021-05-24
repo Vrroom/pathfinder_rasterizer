@@ -1,26 +1,29 @@
 [package]
-name = "pathfinder_rasterize"
+name = "pathfinder_rasterizer"
 version = "0.1.0"
 authors = ["Sebastian K <s3bk@protonmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "rasterize"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.13.2"
+features = ["extension-module"]
 
 [dependencies]
-pathfinder_geometry = { git = "https://github.com/s3bk/pathfinder" }
-pathfinder_content = { git = "https://github.com/s3bk/pathfinder" }
-pathfinder_color = { git = "https://github.com/s3bk/pathfinder" }
-pathfinder_gl = { git = "https://github.com/s3bk/pathfinder" }
-pathfinder_gpu = { git = "https://github.com/s3bk/pathfinder" }
-pathfinder_canvas = { git = "https://github.com/s3bk/pathfinder" }
-pathfinder_renderer = { git = "https://github.com/s3bk/pathfinder" }
-pathfinder_resources = { git = "https://github.com/s3bk/pathfinder" }
+pathfinder_geometry  = { git = "https://github.com/servo/pathfinder" }
+pathfinder_content   = { git = "https://github.com/servo/pathfinder" }
+pathfinder_color     = { git = "https://github.com/servo/pathfinder" }
+pathfinder_gl        = { git = "https://github.com/servo/pathfinder" }
+pathfinder_gpu       = { git = "https://github.com/servo/pathfinder" }
+pathfinder_canvas    = { git = "https://github.com/servo/pathfinder" }
+pathfinder_renderer  = { git = "https://github.com/servo/pathfinder" }
+pathfinder_resources = { git = "https://github.com/servo/pathfinder" }
+pathfinder_svg       = { git = "https://github.com/servo/pathfinder" }
 pdf_font = { git = "https://github.com/pdf-rs/font", package="font" }
 gl = "*"
-image = "*"
 khronos-egl = { version = "*", features = ["dynamic"] }
-
-[dev-dependencies]
+usvg = "0.9.1"
 image = "*"
-pathfinder_svg = { git = "https://github.com/s3bk/pathfinder" }
-usvg = "*"
