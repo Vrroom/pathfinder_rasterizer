@@ -6,7 +6,7 @@ setup(
     name="pathfinder_rasterizer",
     version="0.1.0",
     packages=["pathfinder_rasterizer"],
-    install_requires=["svgpathtools"],
+    dependency_links=['http://github.com/Vrroom/svgpathtools/tarball/usefulTools#egg=svgpathtools-1.3.3'],
     rust_extensions=[RustExtension("pathfinder_rasterizer.pathfinder_rasterizer")],
     include_package_data=True,
     zip_safe=False,

@@ -11,7 +11,7 @@ fn main() {
 
     let input_data = std::fs::read(&input).expect("read input");
     let mut rasterizer = Rasterizer::new();
-    let (pixels, h, w) = rasterizer.rasterize(input_data);
+    let (pixels, h, w) = rasterizer.rasterize(input_data, 0, 0);
     let image = RgbaImage::from_raw(h, w, pixels).unwrap();
     image.save(&output).unwrap();
 }

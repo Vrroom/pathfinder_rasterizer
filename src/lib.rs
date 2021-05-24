@@ -54,8 +54,8 @@ impl PyRasterizer {
     }
 
     #[text_signature = "($self, data: Vector)"]
-    pub fn rasterize(&mut self, data: Vec<u8>) -> PyResult<(Data, u32, u32)>{
-        let (data, width, height) = self.inner.rasterize(data);
+    pub fn rasterize(&mut self, data: Vec<u8>, minx: i32, miny: i32) -> PyResult<(Data, u32, u32)>{
+        let (data, width, height) = self.inner.rasterize(data, minx, miny);
         Ok((Data(data), width, height))
     }
 }

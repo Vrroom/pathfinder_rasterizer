@@ -18,7 +18,6 @@ use pathfinder_geometry::{
 };
 use pathfinder_color::ColorF;
 use pathfinder_resources::embedded::EmbeddedResourceLoader;
-
 use khronos_egl as egl;
 
 pub struct Rasterizer {
@@ -28,6 +27,7 @@ pub struct Rasterizer {
     context: egl::Context,
     renderer: Option<(Renderer<GLDevice>, Vector2I)>,
 }
+
 impl Rasterizer {
     pub fn new() -> Self {
         let egl = egl::Instance::new(egl::Static);
@@ -116,13 +116,13 @@ impl Rasterizer {
         renderer
     }
 
-    pub fn rasterize(&mut self, input_data: Vec<u8>) -> (Vec<u8>, u32, u32) {
+    pub fn rasterize(&mut self, input_data: Vec<u8>, minx: i32, miny: i32) -> (Vec<u8>, u32, u32) {
         let tree = Tree::from_data(&input_data, &Options::default()).unwrap();
         let mut scene = SVGScene::from_tree(&tree).scene;
         self.make_current();
         
+        let origin = Vector2I::new(minx, miny);
         let size = scene.view_box().size().ceil().to_i32();
-
         let renderer = self.renderer_for_size(size);
         
         let options = BuildOptions {
@@ -137,12 +137,11 @@ impl Rasterizer {
             DestFramebuffer::Other(ref fb) => RenderTarget::Framebuffer(fb),
             _=> panic!()
         };
-        let texture_data_receiver = renderer.device().read_pixels(&render_target, RectI::new(Vector2I::zero(), size));
+        let texture_data_receiver = renderer.device().read_pixels(&render_target, RectI::new(origin, size));
         let pixels = match renderer.device().recv_texture_data(&texture_data_receiver) {
             TextureData::U8(pixels) => pixels,
             _ => panic!("Unexpected pixel format for default framebuffer!"),
         };
-
         (pixels, size.x() as u32, size.y() as u32)
     }
 }
