@@ -21,6 +21,9 @@ pathfinder_canvas    = { git = "https://github.com/servo/pathfinder" }
 pathfinder_renderer  = { git = "https://github.com/servo/pathfinder" }
 pathfinder_resources = { git = "https://github.com/servo/pathfinder" }
 pathfinder_svg       = { git = "https://github.com/servo/pathfinder" }
+svg_draw = { git = "https://github.com/s3bk/svg" }
+svg_dom = { git = "https://github.com/s3bk/svg" }
+svg_text = { git = "https://github.com/s3bk/svg" }
 pdf_font = { git = "https://github.com/pdf-rs/font", package="font" }
 gl = "*"
 khronos-egl = { version = "*", features = ["static"] }

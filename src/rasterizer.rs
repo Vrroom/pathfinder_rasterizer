@@ -9,8 +9,6 @@ use pathfinder_renderer::{
     },
     options::{BuildOptions, RenderTransform}
 };
-use pathfinder_svg::SVGScene;
-use usvg::{Tree, Options};
 use pathfinder_gpu::{Device, TextureData, RenderTarget, TextureFormat};
 use pathfinder_geometry::{
     vector::{Vector2F, Vector2I},
@@ -19,6 +17,10 @@ use pathfinder_geometry::{
 use pathfinder_color::ColorF;
 use pathfinder_resources::embedded::EmbeddedResourceLoader;
 use khronos_egl as egl;
+use svg_dom::{Svg};
+use svg_draw::{DrawSvg};
+use svg_text::{FontCollection};
+use std::sync::Arc;
 
 pub struct Rasterizer {
     egl: egl::Instance<egl::Static>,
@@ -117,8 +119,9 @@ impl Rasterizer {
     }
 
     pub fn rasterize(&mut self, input_data: Vec<u8>, minx: i32, miny: i32) -> (Vec<u8>, u32, u32) {
-        let tree = Tree::from_data(&input_data, &Options::default()).unwrap();
-        let mut scene = SVGScene::from_tree(&tree).scene;
+        let svg = Svg::from_data(&input_data).unwrap();
+        let fonts = Arc::new(FontCollection::from_fonts(vec![]));
+        let mut scene = DrawSvg::new(svg, fonts).compose();
         self.make_current();
         
         let origin = Vector2I::new(minx, miny);
