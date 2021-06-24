@@ -1,8 +1,9 @@
 use pyo3::prelude::*;
-use pyo3::types::PyByteArray;
+use pyo3::types::PyBytes;
 use pyo3::{
     class::PyObjectProtocol,
 };
+use image::RgbaImage;
 
 macro_rules! wrap {
     ($name:ident, $inner:ty) => {
@@ -42,7 +43,7 @@ wrap!(PyRasterizer, Rasterizer);
 pub struct Data(Vec<u8>);
 impl IntoPy<PyObject> for Data {
     fn into_py(self, py: Python<'_>) -> PyObject {
-        PyByteArray::new(py, &self.0).into()
+        PyBytes::new(py, &self.0).into()
     }
 }
 

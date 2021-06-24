@@ -77,7 +77,7 @@ impl Rasterizer {
 
     fn renderer_for_size(&mut self, size: Vector2I) -> &mut Renderer<GLDevice> {
         let (ref mut renderer, ref mut current_size) = *self.renderer.get_or_insert_with(|| {
-            let render_level = RendererLevel::D3D9;
+            let render_level = RendererLevel::D3D11;
             let background = ColorF::new(0.0, 0.0, 0.0, 0.0);
             let resource_loader = EmbeddedResourceLoader::new();
 
@@ -138,6 +138,7 @@ impl Rasterizer {
             _=> panic!()
         };
         let texture_data_receiver = renderer.device().read_pixels(&render_target, RectI::new(origin, size));
+        
         let pixels = match renderer.device().recv_texture_data(&texture_data_receiver) {
             TextureData::U8(pixels) => pixels,
             _ => panic!("Unexpected pixel format for default framebuffer!"),
