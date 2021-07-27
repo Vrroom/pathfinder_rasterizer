@@ -1,0 +1,2 @@
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-changed=/net/voxel07/misc/me/sumitc/.cargo/registry/src/github.com-1ecc6299db9ec823/pdf_encoding-0.1.0/agl-aglfn/glyphlist.txt

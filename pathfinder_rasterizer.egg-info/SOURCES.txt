@@ -1,0 +1,15 @@
+Cargo.toml
+MANIFEST.in
+README.md
+setup.py
+pathfinder_rasterizer/__init__.py
+pathfinder_rasterizer/utils.py
+pathfinder_rasterizer.egg-info/PKG-INFO
+pathfinder_rasterizer.egg-info/SOURCES.txt
+pathfinder_rasterizer.egg-info/dependency_links.txt
+pathfinder_rasterizer.egg-info/not-zip-safe
+pathfinder_rasterizer.egg-info/requires.txt
+pathfinder_rasterizer.egg-info/top_level.txt
+src/lib.rs
+src/main.rs
+src/rasterizer.rs
